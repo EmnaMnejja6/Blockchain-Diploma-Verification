@@ -39,4 +39,28 @@ describe("UniversityRegistry", function () {
       ).to.be.revertedWith("Only admin can perform this action");
     });
   });
+
+  describe("input validation and duplicates", function () {
+    it("rejects an empty university name", async function () {
+      await expect(registry.addUniversity("", uni1.address))
+        .to.be.revertedWith("Name cannot be empty");
+    });
+
+    it("rejects the zero wallet address", async function () {
+      await expect(registry.addUniversity(FSS, ethers.ZeroAddress))
+        .to.be.revertedWith("Invalid wallet address");
+    });
+
+    it("rejects a duplicate university name", async function () {
+      await registry.addUniversity(FSS, uni1.address);
+      await expect(registry.addUniversity(FSS, uni2.address))
+        .to.be.revertedWith("University already exists");
+    });
+
+    it("rejects a duplicate wallet", async function () {
+      await registry.addUniversity(FSS, uni1.address);
+      await expect(registry.addUniversity(ENIS, uni1.address))
+        .to.be.revertedWith("Wallet already registered");
+    });
+  });
 });
