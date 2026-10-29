@@ -41,6 +41,7 @@ contract UniversityRegistry {
         });
 
         walletUsed[wallet] = true;
+        nameOfWallet[wallet] = name;
         names.push(name);
 
         emit UniversityAdded(name, wallet);
@@ -65,6 +66,19 @@ contract UniversityRegistry {
     {
         University memory university = universities[name];
         return (university.wallet, university.active, university.exists);
+    }
+
+    // Lookup by wallet. Used by Taher's issueDiploma.
+    function isActiveUniversity(address wallet) public view returns (bool) {
+        if (!walletUsed[wallet]) {
+            return false;
+        }
+        return universities[nameOfWallet[wallet]].active;
+    }
+
+    function getUniversityName(address wallet) public view returns (string memory) {
+        require(walletUsed[wallet], "Wallet not registered");
+        return nameOfWallet[wallet];
     }
 
     function getUniversityNames() public view returns (string[] memory) {
