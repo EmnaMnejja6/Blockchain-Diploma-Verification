@@ -63,4 +63,72 @@ describe("UniversityRegistry", function () {
         .to.be.revertedWith("Wallet already registered");
     });
   });
+
+  describe("revocation", function () {
+    it("revokes a university and emits an event", async function () {
+      await registry.addUniversity(FSS, uni1.address);
+      await expect(registry.revokeUniversity(FSS))
+        .to.emit(registry, "UniversityRevoked")
+        .withArgs(FSS, uni1.address);
+
+      const [wallet, active, exists] = await registry.getUniversityAddress(FSS);
+      expect(wallet).to.equal(uni1.address);
+      expect(active).to.equal(false);
+      expect(exists).to.equal(true);
+    });
+
+    it("rejects revoking an unknown university", async function () {
+      await expect(registry.revokeUniversity(FSS))
+        .to.be.revertedWith("University does not exist");
+    });
+
+    it("rejects revoking an already revoked university", async function () {
+      await registry.addUniversity(FSS, uni1.address);
+      await registry.revokeUniversity(FSS);
+      await expect(registry.revokeUniversity(FSS))
+        .to.be.revertedWith("University already revoked");
+    });
+  });
+
+  describe("getters and list", function () {
+    it("returns university details by name", async function () {
+      await registry.addUniversity(FSS, uni1.address);
+
+      const [wallet, active, exists] = await registry.getUniversityAddress(FSS);
+      expect(wallet).to.equal(uni1.address);
+      expect(active).to.equal(true);
+      expect(exists).to.equal(true);
+    });
+
+    it("returns an empty result for an unknown university", async function () {
+      const [wallet, active, exists] = await registry.getUniversityAddress(FSS);
+      expect(wallet).to.equal(ethers.ZeroAddress);
+      expect(active).to.equal(false);
+      expect(exists).to.equal(false);
+    });
+
+    it("checks whether a wallet is an active university", async function () {
+      await registry.addUniversity(FSS, uni1.address);
+      expect(await registry.isActiveUniversity(uni1.address)).to.equal(true);
+
+      await registry.revokeUniversity(FSS);
+      expect(await registry.isActiveUniversity(uni1.address)).to.equal(false);
+      expect(await registry.isActiveUniversity(uni2.address)).to.equal(false);
+    });
+
+    it("gets a university name by wallet", async function () {
+      await registry.addUniversity(FSS, uni1.address);
+      expect(await registry.getUniversityName(uni1.address)).to.equal(FSS);
+
+      await expect(registry.getUniversityName(uni2.address))
+        .to.be.revertedWith("Wallet not registered");
+    });
+
+    it("lists all registered university names", async function () {
+      await registry.addUniversity(FSS, uni1.address);
+      await registry.addUniversity(ENIS, uni2.address);
+
+      expect(await registry.getUniversityNames()).to.deep.equal([FSS, ENIS]);
+    });
+  });
 });
