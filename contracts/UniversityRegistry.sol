@@ -54,4 +54,20 @@ contract UniversityRegistry {
 
         emit UniversityRevoked(name, universities[name].wallet);
     }
+
+    // Lookup by name. Returns (wallet, active, exists).
+    // exists == false  -> unknown university
+    // exists && !active -> revoked university
+    function getUniversityAddress(string memory name)
+        public
+        view
+        returns (address wallet, bool active, bool exists)
+    {
+        University memory university = universities[name];
+        return (university.wallet, university.active, university.exists);
+    }
+
+    function getUniversityNames() public view returns (string[] memory) {
+        return names;
+    }
 }
