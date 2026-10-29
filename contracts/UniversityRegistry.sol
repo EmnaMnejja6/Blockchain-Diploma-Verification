@@ -45,4 +45,13 @@ contract UniversityRegistry {
 
         emit UniversityAdded(name, wallet);
     }
+
+    function revokeUniversity(string memory name) public onlyAdmin {
+        require(universities[name].exists, "University does not exist");
+        require(universities[name].active, "University already revoked");
+
+        universities[name].active = false;
+
+        emit UniversityRevoked(name, universities[name].wallet);
+    }
 }
