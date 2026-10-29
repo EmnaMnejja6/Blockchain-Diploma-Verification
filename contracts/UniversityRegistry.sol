@@ -27,4 +27,22 @@ contract UniversityRegistry {
     constructor() {
         admin = msg.sender;
     }
+
+    function addUniversity(string memory name, address wallet) public onlyAdmin {
+        require(bytes(name).length > 0, "Name cannot be empty");
+        require(wallet != address(0), "Invalid wallet address");
+        require(!universities[name].exists, "University already exists");
+        require(!walletUsed[wallet], "Wallet already registered");
+
+        universities[name] = University({
+            wallet: wallet,
+            active: true,
+            exists: true
+        });
+
+        walletUsed[wallet] = true;
+        names.push(name);
+
+        emit UniversityAdded(name, wallet);
+    }
 }
