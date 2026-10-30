@@ -1,57 +1,106 @@
-# Sample Hardhat 3 Project (`mocha` and `ethers`)
+# Blockchain Diploma Verification
 
-This project showcases a Hardhat 3 project using `mocha` for tests and the `ethers` library for Ethereum interactions.
+A Hardhat 3 project for managing the universities authorized to issue blockchain diplomas.
 
-To learn more about Hardhat 3, please visit the [Getting Started guide](https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3). To share your feedback, join our [Hardhat 3](https://hardhat.org/hardhat3-telegram-group) Telegram group or [open an issue](https://github.com/NomicFoundation/hardhat/issues/new) in our GitHub issue tracker.
+## Contracts
 
-## Project Overview
+### UniversityRegistry
 
-This example project includes:
+The `UniversityRegistry` contract provides admin-controlled university registration and revocation.
 
-- A simple Hardhat configuration file.
-- Foundry-compatible Solidity unit tests.
-- TypeScript integration tests using `mocha` and ethers.js
-- Examples demonstrating how to connect to different types of networks, including locally simulating OP mainnet.
+- Sets the deployer as the administrator.
+- Registers universities by name and wallet address.
+- Rejects empty names, zero addresses, duplicate names, and duplicate wallets.
+- Revokes registered universities.
+- Supports lookup by university name or wallet address.
+- Lists all registered university names.
 
-## Usage
+## Prerequisites
 
-### Running Tests
+- Node.js 22 or newer
+- npm
 
-To run all the tests in the project, execute the following command:
+## Installation
 
-```shell
+```bash
+npm install
+```
+
+## Compile Contracts
+
+```bash
+npx hardhat build
+```
+
+## Run Tests
+
+Run all Solidity and Mocha tests:
+
+```bash
 npx hardhat test
 ```
 
-You can also selectively run the Solidity or `mocha` tests:
+Run only Solidity tests:
 
-```shell
+```bash
 npx hardhat test solidity
+```
+
+Run only TypeScript/Mocha tests:
+
+```bash
 npx hardhat test mocha
 ```
 
-### Make a deployment to Sepolia
+## Deploy with Hardhat Ignition
 
-This project includes an example Ignition module to deploy the contract. You can deploy this module to a locally simulated chain or to Sepolia.
+### Local Hardhat Network
 
-To run the deployment to a local chain:
-
-```shell
-npx hardhat ignition deploy ignition/modules/Counter.ts
+```bash
+npx hardhat ignition deploy ./ignition/modules/UniversityRegistry.ts
 ```
 
-To run the deployment to Sepolia, you need an account with funds to send the transaction. The provided Hardhat configuration includes a Configuration Variable called `SEPOLIA_PRIVATE_KEY`, which you can use to set the private key of the account you want to use.
+The local deployment uses an in-process Hardhat Network and is reset after the process ends.
 
-You can set the `SEPOLIA_PRIVATE_KEY` variable using the `hardhat-keystore` plugin or by setting it as an environment variable.
+### Sepolia
 
-To set the `SEPOLIA_PRIVATE_KEY` config variable using `hardhat-keystore`:
+Configure the RPC URL and private key:
 
-```shell
+```bash
+npx hardhat keystore set SEPOLIA_RPC_URL
 npx hardhat keystore set SEPOLIA_PRIVATE_KEY
 ```
 
-After setting the variable, you can run the deployment with the Sepolia network:
+Then deploy:
 
-```shell
-npx hardhat ignition deploy --network sepolia ignition/modules/Counter.ts
+```bash
+npx hardhat ignition deploy ./ignition/modules/UniversityRegistry.ts --network sepolia
+```
+
+## Registry Functions
+
+### Admin
+
+```solidity
+addUniversity(string name, address wallet)
+revokeUniversity(string name)
+```
+
+### Read Functions
+
+```solidity
+getUniversityAddress(string name)
+isActiveUniversity(address wallet)
+getUniversityName(address wallet)
+getUniversityNames()
+```
+
+## Project Structure
+
+```text
+contracts/                  Solidity contracts and Solidity tests
+ignition/modules/           Hardhat Ignition deployment modules
+test/                       TypeScript/Mocha integration tests
+artifacts/                  Compiled contract artifacts
+types/ethers-contracts/     Generated ethers contract types
 ```
