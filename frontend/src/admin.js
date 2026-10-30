@@ -61,8 +61,25 @@ async function loadList() {
       row.appendChild(td);
     }
 
-    row.appendChild(document.createElement("td"));
+    const actionTd = document.createElement("td");
+    if (active && contract) {
+      const btn = document.createElement("button");
+      btn.textContent = "Révoquer";
+      btn.addEventListener("click", () => revoke(name));
+      actionTd.appendChild(btn);
+    }
+    row.appendChild(actionTd);
     listEl.appendChild(row);
+  }
+}
+
+async function revoke(name) {
+  try {
+    const tx = await contract.revokeUniversity(name);
+    await tx.wait();
+    await loadList();
+  } catch (err) {
+    messageEl.textContent = "Erreur : " + (err.reason || err.shortMessage || err.message);
   }
 }
 
