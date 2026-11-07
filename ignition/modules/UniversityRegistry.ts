@@ -1,7 +1,7 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 
-export default buildModule("UniversityRegistryModule", (m) => {
-  const registry = m.contract("UniversityRegistry");
-
-  return { registry };
+export default buildModule("DiplomaModule", (m) => {
+  const universityRegistry = m.contract("UniversityRegistry");
+  const diplomaRegistry = m.contract("DiplomaRegistry", [universityRegistry]);
+  return { universityRegistry, diplomaRegistry };
 });
