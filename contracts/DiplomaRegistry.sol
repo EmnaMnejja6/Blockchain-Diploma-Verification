@@ -47,4 +47,19 @@ contract DiplomaRegistry {
         d.revokeReason = reason;
         emit DiplomaRevoked(hash, msg.sender, reason);
     }
+
+    function verifyDiploma(bytes32 hash)
+        external
+        view
+        returns (
+            bool exists,
+            address issuer,
+            uint256 issuedAt,
+            bool revoked,
+            string memory reason
+        )
+    {
+        Diploma storage d = diplomas[hash];
+        return (d.exists, d.issuer, d.issuedAt, d.revoked, d.revokeReason);
+    }
 }
