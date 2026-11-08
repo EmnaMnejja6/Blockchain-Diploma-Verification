@@ -2,19 +2,11 @@ import { Contract, JsonRpcProvider, ZeroAddress } from "ethers";
 import diplomaAbi from "./abi/DiplomaRegistry.json";
 import universityAbi from "./abi/UniversityRegistry.json";
 import { CONTRACT_ADDRESS, DIPLOMA_REGISTRY_ADDRESS, RPC_URL } from "./config.js";
-import { normalizeName } from "./utils.js";
+import { normalizeName, hashFile } from "./utils.js";
 
 const provider = new JsonRpcProvider(RPC_URL); // lecture seule, pas de MetaMask
 const diplomas = new Contract(DIPLOMA_REGISTRY_ADDRESS, diplomaAbi, provider);
 const universities = new Contract(CONTRACT_ADDRESS, universityAbi, provider);
-
-async function hashFile(file) {
-    const buffer = await file.arrayBuffer();
-    const digest = await crypto.subtle.digest("SHA-256", buffer);
-    return "0x" + [...new Uint8Array(digest)]
-        .map((b) => b.toString(16).padStart(2, "0"))
-        .join("");
-}
 
 function decide(diploma, university) {
     if (!diploma.exists)
