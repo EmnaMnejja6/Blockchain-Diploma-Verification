@@ -4,24 +4,41 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Émission d'un diplôme</title>
+  <link rel="stylesheet" href="/src/style.css" />
 </head>
 <body>
-  <h1>Émission d'un diplôme</h1>
-  <p><a href="/index.html">Administration des universités</a></p>
+  <nav class="topbar">
+    <span class="brand">Diplômes sur Blockchain</span>
+    <a href="/index.html">Administration</a>
+    <a href="/issue.html" class="active">Émission</a>
+  </nav>
 
-  <section>
-    <button id="connectBtn">Connecter MetaMask</button>
-    <p id="status">Non connecté</p>
-  </section>
+  <main>
+    <header>
+      <h1>Émission d'un diplôme</h1>
+      <p class="subtitle">Le PDF reste sur votre ordinateur : seule son empreinte SHA-256 est enregistrée.</p>
+    </header>
 
-  <section id="issueSection" hidden>
-    <h2>Émettre un diplôme</h2>
-    <input id="fileInput" type="file" accept="application/pdf" />
-    <p>Empreinte SHA-256 : <code id="hashOut">-</code></p>
-    <button id="issueBtn" disabled>Émettre le diplôme</button>
-    <p id="message"></p>
-    <p>Hash de la transaction : <code id="txOut">-</code></p>
-  </section>
+    <section>
+      <button id="connectBtn">Connecter MetaMask</button>
+      <p id="status">Non connecté</p>
+    </section>
+
+    <section id="issueSection" hidden>
+      <h2>Émettre un diplôme</h2>
+      <input id="fileInput" type="file" accept="application/pdf" />
+
+      <p class="label">Empreinte SHA-256</p>
+      <code id="hashOut">-</code>
+
+      <p></p>
+      <button id="issueBtn" disabled>Émettre le diplôme</button>
+      <p id="message"></p>
+
+      <p class="label">Hash de la transaction</p>
+      <code id="txOut">-</code>
+    </section>
+  </main>
 
   <script type="module" src="/src/issue.js"></script>
 </body>
