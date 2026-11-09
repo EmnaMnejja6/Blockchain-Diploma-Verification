@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Émission d'un diplôme</title>
+  <link rel="icon" href="/logo.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/src/style.css" />
 </head>
+
 <body>
   <nav class="topbar">
-    <span class="brand">Diplômes sur Blockchain</span>
+    <a href="/index.html" class="brand">
+      <img src="/logo.svg" alt="" width="32" height="32" />
+      <span>Diplôme<strong>Chain</strong></span>
+    </a>
     <a href="/index.html">Administration</a>
     <a href="/issue.html" class="active">Émission</a>
   </nav>
@@ -38,8 +44,25 @@
       <p class="label">Hash de la transaction</p>
       <code id="txOut">-</code>
     </section>
+
+    <section id="listSection" hidden>
+      <h2>Diplômes émis par cette université</h2>
+      <p id="emptyList" class="subtitle" hidden>Aucun diplôme émis pour le moment.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Empreinte</th>
+            <th>Date</th>
+            <th>Statut</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="diplomaList"></tbody>
+      </table>
+    </section>
   </main>
 
   <script type="module" src="/src/issue.js"></script>
 </body>
+
 </html>
