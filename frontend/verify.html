@@ -3,18 +3,39 @@
 
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vérification de diplôme</title>
+    <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/src/style.css" />
 </head>
 
 <body>
-    <h1>Vérifier un diplôme</h1>
-    <p>
-        <input id="universityName" placeholder="Nom de l'établissement" />
-        <input id="pdfFile" type="file" accept="application/pdf" />
-        <button id="verifyBtn">Vérifier</button>
-    </p>
-    <p id="result"></p>
-    <script type="module" src="./src/verify.js"></script>
+    <nav class="topbar">
+        <a href="/index.html" class="brand">
+            <img src="/logo.svg" alt="" width="32" height="32" />
+            <span>Diplôme<strong>Chain</strong></span>
+        </a>
+        <a href="/index.html">Administration</a>
+        <a href="/issue.html">Émission</a>
+        <a href="/verify.html" class="active">Vérification</a>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Vérifier un diplôme</h1>
+            <p class="subtitle">Saisissez l'établissement et déposez le PDF : l'empreinte est calculée dans votre
+                navigateur, le fichier n'est jamais envoyé.</p>
+        </header>
+
+        <section>
+            <input id="universityName" placeholder="Nom de l'établissement" />
+            <input id="pdfFile" type="file" accept="application/pdf" />
+            <button id="verifyBtn">Vérifier</button>
+            <p id="result"></p>
+        </section>
+    </main>
+
+    <script type="module" src="/src/verify.js"></script>
 </body>
 
 </html>
