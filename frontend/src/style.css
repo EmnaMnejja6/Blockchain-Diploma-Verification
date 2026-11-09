@@ -1,0 +1,196 @@
+:root {
+  --bg: #f4f6fb;
+  --card: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --primary: #0DA2E7;
+  --primary-dark: #0b86c0;
+  --danger: #dc2626;
+  --border: #e5e7eb;
+}
+
+* { box-sizing: border-box; }
+
+/* Needed: without this, the "hidden" attribute is ignored on elements with display set */
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--card);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+/* Top navigation bar: white, with a thin border */
+.topbar {
+  background: #fff;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 64px;
+}
+.topbar a {
+  color: var(--muted);
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+.topbar a:hover { background: #f3f4f6; color: var(--text); }
+.topbar a.active { color: var(--primary); background: #e7f6fd; }
+
+.topbar .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: auto;
+  padding: 0;
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--text);
+}
+.topbar .brand:hover { background: none; }
+.topbar .brand strong { color: var(--primary); }
+
+/* Page layout */
+main {
+  max-width: 820px;
+  margin: 32px auto;
+  padding: 0 16px;
+  display: grid;
+  gap: 20px;
+}
+
+h1 { margin: 0 0 4px; font-size: 1.6rem; }
+h2 { margin: 0 0 16px; font-size: 1.15rem; }
+.subtitle { margin: 0; color: var(--muted); }
+
+/* Cards */
+section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Form elements */
+input[type="text"],
+input:not([type]),
+input[type="file"] {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #fff;
+}
+input:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+button {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+button:hover:not(:disabled) { background: var(--primary-dark); }
+button:disabled { background: #c7c9d1; cursor: not-allowed; }
+
+/* "Révoquer" buttons inside the table */
+td button { background: var(--danger); padding: 6px 12px; font-size: 0.85rem; }
+td button:hover:not(:disabled) { background: #b91c1c; }
+
+/* Status and messages */
+#status {
+  margin: 12px 0 0;
+  padding: 8px 12px;
+  background: #e7f6fd;
+  border-radius: 8px;
+  color: #0877ab;
+  font-size: 0.9rem;
+  word-break: break-all;
+}
+#message { margin: 12px 0 0; font-weight: 500; }
+#message:empty { display: none; }
+
+/* Hashes and addresses */
+code {
+  display: block;
+  margin-top: 4px;
+  padding: 8px 10px;
+  background: #f3f4f6;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  word-break: break-all;
+}
+.label { margin: 12px 0 0; color: var(--muted); font-size: 0.9rem; }
+
+/* Table */
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+th {
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+tbody tr:hover { background: #f9fafb; }
+
+/* Connect button: scale up and shine on hover (no color change) */
+#connectBtn {
+  position: relative;
+  overflow: hidden;              /* keeps the shine inside the button */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#connectBtn:hover:not(:disabled) {
+  background: var(--primary);    /* overrides the darker hover color */
+  transform: scale(1.06);
+  box-shadow: 0 6px 16px rgba(13, 162, 231, 0.35);
+}
+
+#connectBtn:active:not(:disabled) {
+  transform: scale(0.98);        /* small "press" effect on click */
+}
+
+/* The shiny stripe, parked on the left outside the button */
+#connectBtn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.55),
+    transparent
+  );
+  transform: skewX(-20deg);
+  pointer-events: none;
+}
+
+/* On hover, the stripe sweeps across to the right */
+#connectBtn:hover::after {
+  left: 125%;
+  transition: left 0.6s ease;
+}
+
+/* Respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  #connectBtn,
+  #connectBtn:hover::after { transition: none; }
+  #connectBtn:hover:not(:disabled) { transform: none; }
+}

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40">
+  <rect width="40" height="40" rx="10" fill="#0DA2E7"/>
+  <!-- graduation cap -->
+  <path d="M20 10 L34 17 L20 24 L6 17 Z" fill="#fff"/>
+  <path d="M12 21.5 V27 C12 30 28 30 28 27 V21.5 L20 25.5 Z" fill="#fff" opacity="0.9"/>
+  <path d="M34 17 V25" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+  <!-- chain node at the end of the tassel -->
+  <circle cx="34" cy="27" r="2.2" fill="#fff"/>
+</svg>
