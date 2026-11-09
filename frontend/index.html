@@ -4,30 +4,46 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Administration des universités</title>
+  <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/src/style.css" />
 </head>
 <body>
-  <h1>Administration des universités</h1>
+  <nav class="topbar">
+    <a href="/index.html" class="brand">
+      <img src="/logo.svg" alt="" width="32" height="32" />
+      <span>Diplôme<strong>Chain</strong></span>
+    </a>
+    <a href="/index.html" class="active">Administration</a>
+    <a href="/issue.html">Émission</a>
+  </nav>
 
-  <section>
-    <button id="connectBtn">Connecter MetaMask</button>
-    <p id="status">Non connecté</p>
-  </section>
+  <main>
+    <header>
+      <h1>Administration des universités</h1>
+      <p class="subtitle">Déclarez et révoquez les universités autorisées à émettre des diplômes.</p>
+    </header>
 
-  <section id="adminSection" hidden>
-    <h2>Ajouter une université</h2>
-    <input id="nameInput" placeholder="Nom de l'université" />
-    <input id="walletInput" placeholder="Adresse du portefeuille (0x...)" />
-    <button id="addBtn">Ajouter</button>
-    <p id="message"></p>
-  </section>
+    <section>
+      <button id="connectBtn">Connecter MetaMask</button>
+      <p id="status">Non connecté</p>
+    </section>
 
-  <section>
-    <h2>Universités enregistrées</h2>
-    <table>
-      <thead><tr><th>Nom</th><th>Adresse</th><th>Statut</th><th></th></tr></thead>
-      <tbody id="list"></tbody>
-    </table>
-  </section>
+    <section id="adminSection" hidden>
+      <h2>Ajouter une université</h2>
+      <input id="nameInput" placeholder="Nom de l'université" />
+      <input id="walletInput" placeholder="Adresse du portefeuille (0x...)" />
+      <button id="addBtn">Ajouter</button>
+      <p id="message"></p>
+    </section>
+
+    <section>
+      <h2>Universités enregistrées</h2>
+      <table>
+        <thead><tr><th>Nom</th><th>Adresse</th><th>Statut</th><th></th></tr></thead>
+        <tbody id="list"></tbody>
+      </table>
+    </section>
+  </main>
 
   <script type="module" src="/src/admin.js"></script>
 </body>
