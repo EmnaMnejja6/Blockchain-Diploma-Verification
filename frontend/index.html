@@ -1,50 +1,111 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Administration des universités</title>
-  <link rel="icon" href="/logo.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/src/style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DiplômeChain - Vérification de diplômes sur blockchain</title>
+    <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/src/style.css" />
 </head>
+
 <body>
-  <nav class="topbar">
-    <a href="/index.html" class="brand">
-      <img src="/logo.svg" alt="" width="32" height="32" />
-      <span>Diplôme<strong>Chain</strong></span>
-    </a>
-    <a href="/index.html" class="active">Administration</a>
-    <a href="/issue.html">Émission</a>
-  </nav>
+    <nav class="topbar">
+        <a href="/index.html" class="brand">
+            <img src="/logo.svg" alt="" width="32" height="32" />
+            <span>Diplôme<strong>Chain</strong></span>
+        </a>
+        <a href="/about.html">À propos</a>
+        <button id="loginBtn" class="login-btn">Connexion</button>
+        <div id="userDropdown" class="user-dropdown" hidden>
+            <button class="user-icon-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </button>
+            <div class="dropdown-menu">
+                <div class="dropdown-header">
+                    <span id="userName" class="dropdown-user-name"></span>
+                </div>
+                <a id="dashboardLink" href="#" class="dropdown-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <span id="dashboardText">Tableau de bord</span>
+                </a>
+                <button id="logoutBtn" class="dropdown-logout-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Déconnexion
+                </button>
+            </div>
+        </div>
+    </nav>
 
-  <main>
-    <header>
-      <h1>Administration des universités</h1>
-      <p class="subtitle">Déclarez et révoquez les universités autorisées à émettre des diplômes.</p>
-    </header>
+    <main class="home-layout">
+        <div class="left-section">
+            <header class="hero-text">
+                <h1>Vérification de diplômes sur blockchain</h1>
+            </header>
 
-    <section>
-      <button id="connectBtn">Connecter MetaMask</button>
-      <p id="status">Non connecté</p>
-    </section>
+            <section class="verify-section">
+                <p class="subtitle">
+                    Saisissez l'établissement et déposez le PDF : l'empreinte est calculée dans votre navigateur,
+                    le fichier n'est jamais envoyé.
+                </p>
+                
+                <div class="verify-form">
+                    <input id="universityName" placeholder="Nom de l'établissement" />
+                    <input id="pdfFile" type="file" accept="application/pdf" />
+                    <button id="verifyBtn">Vérifier</button>
+                </div>
+                
+                <p id="result" class="result-message"></p>
+            </section>
+        </div>
 
-    <section id="adminSection" hidden>
-      <h2>Ajouter une université</h2>
-      <input id="nameInput" placeholder="Nom de l'université" />
-      <input id="walletInput" placeholder="Adresse du portefeuille (0x...)" />
-      <button id="addBtn">Ajouter</button>
-      <p id="message"></p>
-    </section>
+        <div class="right-section">
+            <img src="/blockchain.jpg" alt="Blockchain Technology" class="hero-image" />
+        </div>
+    </main>
 
-    <section>
-      <h2>Universités enregistrées</h2>
-      <table>
-        <thead><tr><th>Nom</th><th>Adresse</th><th>Statut</th><th></th></tr></thead>
-        <tbody id="list"></tbody>
-      </table>
-    </section>
-  </main>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal" hidden>
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 class="modal-title">Connexion</h2>
+            <p class="modal-subtitle">Choisissez votre type de compte</p>
+            <div class="login-buttons">
+                <button id="adminLoginBtn" class="role-btn">
+                    <svg class="role-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    <span class="role-title">Administrateur</span>
+                    <span class="role-desc">Gérer les universités</span>
+                </button>
+                <button id="universityLoginBtn" class="role-btn">
+                    <svg class="role-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                    </svg>
+                    <span class="role-title">Université</span>
+                    <span class="role-desc">Émettre des diplômes</span>
+                </button>
+            </div>
+            <p id="loginStatus"></p>
+        </div>
+    </div>
 
-  <script type="module" src="/src/admin.js"></script>
+    <script type="module" src="/src/verify.js"></script>
+    <script type="module" src="/src/auth.js"></script>
 </body>
+
 </html>

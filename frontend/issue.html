@@ -15,22 +15,47 @@
       <img src="/logo.svg" alt="" width="32" height="32" />
       <span>Diplôme<strong>Chain</strong></span>
     </a>
-    <a href="/index.html">Administration</a>
-    <a href="/issue.html" class="active">Émission</a>
+    <a href="/about.html">À propos</a>
+    <div id="userDropdown" class="user-dropdown">
+      <button class="user-icon-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </button>
+      <div class="dropdown-menu">
+        <div class="dropdown-header">
+          <span id="userName" class="dropdown-user-name"></span>
+        </div>
+        <a id="dashboardLink" href="/issue.html" class="dropdown-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          <span id="dashboardText">Émission</span>
+        </a>
+        <button id="logoutBtn" class="dropdown-logout-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          Déconnexion
+        </button>
+      </div>
+    </div>
   </nav>
 
   <main>
     <header>
       <h1>Émission d'un diplôme</h1>
       <p class="subtitle">Le PDF reste sur votre ordinateur : seule son empreinte SHA-256 est enregistrée.</p>
+      <p id="status" class="status-text">Connecté en tant qu'université</p>
     </header>
 
-    <section>
-      <button id="connectBtn">Connecter MetaMask</button>
-      <p id="status">Non connecté</p>
-    </section>
-
-    <section id="issueSection" hidden>
+    <section id="issueSection">
       <h2>Émettre un diplôme</h2>
       <input id="fileInput" type="file" accept="application/pdf" />
 
@@ -45,7 +70,7 @@
       <code id="txOut">-</code>
     </section>
 
-    <section id="listSection" hidden>
+    <section id="listSection">
       <h2>Diplômes émis par cette université</h2>
       <p id="emptyList" class="subtitle" hidden>Aucun diplôme émis pour le moment.</p>
       <table>
@@ -63,6 +88,7 @@
   </main>
 
   <script type="module" src="/src/issue.js"></script>
+  <script type="module" src="/src/auth.js"></script>
 </body>
 
 </html>

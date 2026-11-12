@@ -57,7 +57,8 @@ document.getElementById("verifyBtn").addEventListener("click", async () => {
         const r = await verify(file, name);
         let text = r.message;
         if (r.reason) text += ` (motif : ${r.reason})`;
-        if (r.issuedAt && r.issuedAt > 0n) {
+        // Only show issue date if verification succeeded
+        if (r.ok && r.issuedAt && r.issuedAt > 0n) {
             text += ` | Émis le ${new Date(Number(r.issuedAt) * 1000).toLocaleDateString("fr-FR")}`;
         }
         out.textContent = text;

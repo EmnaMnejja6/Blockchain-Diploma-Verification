@@ -32,13 +32,33 @@ const readDiploma = new Contract(
   new JsonRpcProvider(RPC_URL)
 );
 
-async function connect() {
+// Auto-connect if coming from login page
+async function autoConnect() {
+  const storedAccount = sessionStorage.getItem("connectedAccount");
+  const userRole = sessionStorage.getItem("userRole");
+  const timestamp = sessionStorage.getItem("connectionTimestamp");
+
+  // Check if session is recent (within 5 minutes)
+  if (storedAccount && userRole === "university" && timestamp) {
+    const age = Date.now() - parseInt(timestamp);
+    if (age < 5 * 60 * 1000) {
+      await connect(true);
+      return;
+    }
+  }
+}
+
+async function connect(isAutoConnect = false) {
   if (!window.ethereum) {
     statusEl.textContent = "MetaMask n'est pas installé";
     return;
   }
   const provider = new BrowserProvider(window.ethereum);
-  await provider.send("eth_requestAccounts", []);
+  
+  // If auto-connecting, don't request accounts again
+  if (!isAutoConnect) {
+    await provider.send("eth_requestAccounts", []);
+  }
 
   const network = await provider.getNetwork();
   if (network.chainId !== CHAIN_ID) {
@@ -55,19 +75,22 @@ async function connect() {
 
   if (isActive) {
     const name = await registry.getUniversityName(currentAccount);
+    
+    // Update the navbar user profile
+    const userName = document.getElementById("userName");
+    if (userName) {
+      userName.textContent = name;
+    }
+    
     statusEl.textContent = `Connecté en tant que ${name} (${currentAccount})`;
   } else {
-    statusEl.textContent = `Connecté (${currentAccount}) : ce compte n'est pas une université active, il ne peut pas émettre de diplômes`;
+    statusEl.textContent = `Connecté (${currentAccount}) : ce compte n'est pas une université active`;
+    window.location.href = "/index.html";
+    return;
   }
-
-  // Only active universities see the form and their list
-  issueSection.hidden = !isActive;
-  listSection.hidden = !isActive;
 
   if (isActive) await loadDiplomas();
 }
-
-document.getElementById("connectBtn").addEventListener("click", connect);
 
 // If the user switches account or network in MetaMask, start over
 if (window.ethereum) {
@@ -75,7 +98,6 @@ if (window.ethereum) {
   window.ethereum.on("chainChanged", () => location.reload());
 }
 
-// List the diplomas issued by the connected account, using the DiplomaIssued events
 async function loadDiplomas() {
   listEl.textContent = "";
 
@@ -162,3 +184,6 @@ async function issue() {
 }
 
 issueBtn.addEventListener("click", issue);
+
+// Auto-connect on page load
+autoConnect();

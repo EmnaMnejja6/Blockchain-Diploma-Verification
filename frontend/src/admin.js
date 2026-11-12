@@ -15,13 +15,36 @@ const readContract = new Contract(
   new JsonRpcProvider(RPC_URL)
 );
 
-async function connect() {
+// Auto-connect if coming from login page
+async function autoConnect() {
+  const storedAccount = sessionStorage.getItem("connectedAccount");
+  const userRole = sessionStorage.getItem("userRole");
+  const timestamp = sessionStorage.getItem("connectionTimestamp");
+
+  // Check if session is recent (within 5 minutes)
+  if (storedAccount && userRole === "admin" && timestamp) {
+    const age = Date.now() - parseInt(timestamp);
+    if (age < 5 * 60 * 1000) {
+      await connect(true);
+      return;
+    }
+  }
+  
+  // No valid session, show connect button
+  await loadList();
+}
+
+async function connect(isAutoConnect = false) {
   if (!window.ethereum) {
     statusEl.textContent = "MetaMask n'est pas installé";
     return;
   }
   const provider = new BrowserProvider(window.ethereum);
-  await provider.send("eth_requestAccounts", []);
+  
+  // If auto-connecting, don't request accounts again
+  if (!isAutoConnect) {
+    await provider.send("eth_requestAccounts", []);
+  }
 
   const network = await provider.getNetwork();
   if (network.chainId !== CHAIN_ID) {
@@ -36,15 +59,22 @@ async function connect() {
   const admin = await contract.admin();
   const isAdmin = admin.toLowerCase() === account.toLowerCase();
 
-  statusEl.textContent = isAdmin
-    ? `Connecté en tant qu'administrateur (${account})`
-    : `Connecté (${account}) : ce compte n'est pas l'administrateur`;
-  adminSection.hidden = !isAdmin;
+  // Update the navbar user profile
+  const userName = document.getElementById("userName");
+  if (userName) {
+    userName.textContent = "Administrateur";
+  }
+
+  statusEl.textContent = `Connecté en tant qu'administrateur (${account})`;
+  
+  if (!isAdmin) {
+    statusEl.textContent = `Connecté (${account}) : ce compte n'est pas l'administrateur`;
+    window.location.href = "/index.html";
+    return;
+  }
 
   await loadList();
 }
-
-document.getElementById("connectBtn").addEventListener("click", connect);
 
 async function loadList() {
   const listEl = document.getElementById("list");
@@ -104,4 +134,5 @@ async function addUniversity() {
 
 document.getElementById("addBtn").addEventListener("click", addUniversity);
 
-loadList();
+// Auto-connect on page load
+autoConnect();
