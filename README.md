@@ -1,90 +1,117 @@
-# Diploma Verification DApp
+# DiplômeChain - Blockchain Diploma Verification
 
-Blockchain app to register and verify university diplomas (Hardhat + ethers.js + MetaMask).
+Web platform for issuing and verifying university diplomas using blockchain technology (Hardhat + ethers.js + MetaMask).
 
-## Quick start (local)
+## Features
+
+- **Role-based authentication** (Admin & University)
+- **Diploma issuance** with SHA-256 hash on blockchain
+- **Public verification** without MetaMask
+- **University registry** with revocation capability
+- **Secure** - PDF files never leave the user's browser
+
+## Quick Start
 
 ```bash
 git clone <repo-url>
 cd Blockchain-Diploma-Verification
-npm install                      # Hardhat dependencies
+npm install         
 cd frontend && npm install && cd ..
 ```
 
-Then use **3 terminals**:
+**Use 3 terminals:**
 
 ```bash
-# Terminal 1: local blockchain (keep it open)
+# Terminal 1: Local blockchain
 npx hardhat node
 
-# Terminal 2: deploy the contract
+# Terminal 2: Deploy contracts
 npx hardhat ignition deploy ignition/modules/UniversityRegistry.ts --network localhost
 
-# Terminal 3: frontend
+# Terminal 3: Frontend dev server
 cd frontend && npm run dev
 ```
 
-Run the tests with:
-
+**Run tests:**
 ```bash
 npx hardhat test
 ```
 
-## MetaMask setup
+## MetaMask Setup
 
-- Add network: RPC `http://127.0.0.1:8545`, Chain ID `31337`, symbol `ETH`
-- Import accounts from the `npx hardhat node` output:
-  - **Account #0 = admin** (deploys the contract)
-  - Account #1, #2... = test universities
-- Use the Hardhat test keys only. Never use a real wallet or commit a private key.
+1. Add local network:
+   - RPC: `http://127.0.0.1:8545`
+   - Chain ID: `31337`
+   - Symbol: `ETH`
 
-After **each restart of the node**, redeploy the contract and check that `frontend/src/config.js` has the right `CONTRACT_ADDRESS`. If MetaMask complains about nonces, reset the account's activity data in its advanced settings.
+2. Import test accounts from `npx hardhat node` output:
+   - **Account #0** = Admin (deploys contracts)
+   - **Account #1, #2...** = Test universities
 
-## Project structure
+⚠️ **Never use real private keys or commit them to the repository.**
 
-```text
-contracts/    Solidity contract (UniversityRegistry.sol)
-test/         Hardhat tests
-ignition/     Deployment modules
-frontend/     Web interface (Vite + ethers v6)
-  src/config.js   contract address (shared)
-  src/utils.js    normalizeName() (shared)
-  src/abi/        contract ABI (copy it again after any contract change)
+After restarting the node:
+- Redeploy contracts
+- Update `CONTRACT_ADDRESS` in `frontend/src/config.js`
+- Reset MetaMask account activity if nonce errors occur
+
+## Project Structure
+
+```
+contracts/           Smart contracts (Solidity)
+  UniversityRegistry.sol   University management
+  DiplomaRegistry.sol      Diploma issuance & verification
+test/                Contract tests
+ignition/            Deployment modules
+frontend/
+  index.html         Landing page (verification)
+  admin.html         Admin dashboard
+  issue.html         University diploma issuance
+  about.html         Platform information
+  src/
+    auth.js          Authentication system
+    admin.js         Admin logic
+    issue.js         Issuance logic
+    verify.js        Verification logic
+    config.js        Contract addresses
+    utils.js         Shared utilities
+    abi/             Contract ABIs
 ```
 
-## Registry interface (Emna)
+## User Roles
+
+| Role | Access | Capabilities |
+|------|--------|--------------|
+| **Admin** | `/admin.html` | Add/revoke universities |
+| **University** | `/issue.html` | Issue/revoke diplomas |
+| **Public** | `/index.html` | Verify diplomas (no MetaMask needed) |
+
+## Smart Contract Interface
+
+### UniversityRegistry
 
 | Function | Who | Description |
-|---|---|---|
-| `addUniversity(name, wallet)` | admin | Registers a university |
-| `revokeUniversity(name)` | admin | Marks it revoked (record is kept) |
-| `getUniversityAddress(name)` | anyone | Returns `(wallet, active, exists)` in this order |
-| `isActiveUniversity(wallet)` | anyone | `true` only if the wallet is registered and not revoked. **Use this in `issueDiploma`.** |
-| `getUniversityName(wallet)` | anyone | Name registered for a wallet (reverts if unknown) |
-| `getUniversityNames()` | anyone | List of all registered names |
+|----------|-----|-------------|
+| `addUniversity(name, wallet)` | admin | Register a university |
+| `revokeUniversity(name)` | admin | Revoke university access |
+| `getUniversityAddress(name)` | anyone | Returns `(wallet, active, exists)` |
+| `isActiveUniversity(wallet)` | anyone | Check if wallet is active university |
+| `getUniversityName(wallet)` | anyone | Get university name by wallet |
+| `getUniversityNames()` | anyone | List all registered universities |
 
-How to read `getUniversityAddress`:
+### DiplomaRegistry
 
-- `exists = false` means unknown university
-- `exists = true, active = false` means revoked university
-- `exists = true, active = true` means valid
+| Function | Who | Description |
+|----------|-----|-------------|
+| `issueDiploma(hash)` | university | Register diploma hash |
+| `revokeDiploma(hash, reason)` | issuer | Revoke a diploma |
+| `verifyDiploma(hash)` | anyone | Check diploma status |
 
-## Rules for everyone
+## Tech Stack
 
-1. **Names are lowercase.** Always call `normalizeName()` from `frontend/src/utils.js` before sending or comparing a name. The contract does not normalize.
-2. A name or a wallet can only be registered **once**, and a revoked university **cannot be re-added**.
-3. Verification only **reads** the chain: use `JsonRpcProvider`, no MetaMask needed.
-4. If you change a contract function, copy the new ABI into `frontend/src/abi/` and tell the others.
-
-## Git workflow
-
-- One branch per feature (`feature/...`), never commit directly to `main`.
-- Small commits with clear messages, push at the end of each session.
-- Open a Pull Request and merge **without squashing**.
-- Pull `main` before starting new work: `git checkout main && git pull`.
-- Only edit shared files (`hardhat.config.ts`, `config.js`, `utils.js`, the ABI) in their own small commit and warn the others.
-
-### Before you push
-
-- Check that the deploy path and the `--network localhost` option match what actually worked for you.
-- Replace `<repo-url>` and the folder name if they differ.
+- **Smart Contracts:** Solidity ^0.8.24
+- **Blockchain:** Hardhat (Ethereum)
+- **Frontend:** Vite + Vanilla JS
+- **Web3:** ethers.js v6
+- **Wallet:** MetaMask
+- **Hashing:** SHA-256 (client-side)
